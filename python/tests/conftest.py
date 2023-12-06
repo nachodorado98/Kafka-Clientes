@@ -8,6 +8,7 @@ from confluent_kafka.admin import AdminClient
 
 from src import crearApp
 from src.kafka.config import SERVIDOR
+from src.database.conexion import Conexion
 
 @pytest.fixture()
 def app():
@@ -25,3 +26,8 @@ def cliente(app):
 def admin():
 
 	return AdminClient({"bootstrap.servers":SERVIDOR})
+
+@pytest.fixture
+def conexion():
+
+	return Conexion()

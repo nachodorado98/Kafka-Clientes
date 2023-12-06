@@ -7,6 +7,7 @@ import threading
 from src.modelos.cliente import ClienteBBDD
 from src.kafka.crear_topic import crearTopic
 from src.kafka.config import TOPIC, SERVIDOR
+from src.database.conexion import Conexion
 
 router_clientes=APIRouter(prefix="/clientes", tags=["Clientes"])
 
@@ -76,6 +77,10 @@ def consumirMensajes()->None:
 				break
 
 		print(mensaje.value().decode("utf-8"))
+
+		con=Conexion()
+
+		con.cerrarConexion()
 
 
 threading.Thread(target=consumirMensajes, daemon=True).start()
