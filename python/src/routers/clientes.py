@@ -76,9 +76,15 @@ def consumirMensajes()->None:
 
 				break
 
-		print(mensaje.value().decode("utf-8"))
+		mensaje_recibido=json.loads(mensaje.value().decode("utf-8"))
 
 		con=Conexion()
+
+		con.insertarCliente(mensaje_recibido["usuario"],
+							mensaje_recibido["nombre"],
+							mensaje_recibido["apellido1"],
+							mensaje_recibido["apellido2"],
+							mensaje_recibido["edad"])
 
 		con.cerrarConexion()
 

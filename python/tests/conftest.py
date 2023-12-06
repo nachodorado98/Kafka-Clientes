@@ -30,4 +30,10 @@ def admin():
 @pytest.fixture
 def conexion():
 
-	return Conexion()
+	con=Conexion()
+
+	con.c.execute("DELETE FROM clientes")
+
+	con.confirmar()
+
+	return con

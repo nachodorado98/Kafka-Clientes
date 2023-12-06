@@ -27,3 +27,12 @@ class Conexion:
 	def confirmar(self)->None:
 
 		self.bbdd.commit()
+
+	# Metodo para insertar un cliente
+	def insertarCliente(self, usuario:str, nombre:str, apellido1:str, apellido2:str, edad:int)->None:
+
+		self.c.execute("""INSERT INTO clientes (usuario, nombre, apellido1, apellido2, edad)
+						VALUES (%s, %s, %s, %s, %s)""",
+						(usuario, nombre, apellido1, apellido2, edad))
+
+		self.confirmar()
