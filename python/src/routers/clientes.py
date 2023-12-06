@@ -1,7 +1,8 @@
 from fastapi import APIRouter, status, HTTPException
 from typing import Dict
-from confluent_kafka import Producer, KafkaException
+from confluent_kafka import Producer, KafkaException, Consumer
 import json
+import threading
 
 from src.modelos.cliente import ClienteBBDD
 from src.kafka.crear_topic import crearTopic
@@ -43,3 +44,38 @@ async def crearCliente(cliente:ClienteBBDD)->Dict:
 	except KafkaException as e:
 
 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Error en la creacion del cliente")
+
+
+# Funcion para consumir los mensajes de Kafka
+def consumirMensajes()->None:
+	
+	consumer=Consumer({"bootstrap.servers": SERVIDOR, "group.id":"grupo1"})
+
+	consumer.subscribe([TOPIC])
+
+	print("Escuchando...")
+
+	while True:
+
+		mensaje=consumer.poll(timeout=100)
+
+		if mensaje is None:
+
+			continue
+
+		if mensaje.error():
+
+			if mensaje.error().code()==KafkaError._PARTITION_EOF:
+
+				continue
+
+			else:
+
+				print(mensaje.error())
+
+				break
+
+		print(mensaje.value().decode("utf-8"))
+
+
+threading.Thread(target=consumirMensajes, daemon=True).start()
