@@ -33,3 +33,34 @@ def test_pagina_agregar_varios_clientes(cliente, conexion):
 	clientes=conexion.c.fetchall()
 
 	assert len(clientes)==6
+
+def test_pagina_obtener_clientes_no_existentes(cliente, conexion):
+
+	respuesta=cliente.get("/clientes")
+
+	contenido=respuesta.json()
+
+	assert respuesta.status_code==404
+	assert "detail" in contenido
+
+def test_pagina_obtener_clientes_existentes(cliente, conexion):
+
+	cliente.post("/clientes", json={"usuario":"nacho98","nombre":"Nacho","apellido1":"Dorado","apellido2":"Ruiz", "edad":25})
+	cliente.post("/clientes", json={"usuario":"nacho98","nombre":"Nacho","apellido1":"Dorado","apellido2":"Ruiz", "edad":25})
+	cliente.post("/clientes", json={"usuario":"nacho98","nombre":"Nacho","apellido1":"Dorado","apellido2":"Ruiz", "edad":25})
+	cliente.post("/clientes", json={"usuario":"nacho98","nombre":"Nacho","apellido1":"Dorado","apellido2":"Ruiz", "edad":25})
+	cliente.post("/clientes", json={"usuario":"nacho98","nombre":"Nacho","apellido1":"Dorado","apellido2":"Ruiz", "edad":25})
+	cliente.post("/clientes", json={"usuario":"nacho98","nombre":"Nacho","apellido1":"Dorado","apellido2":"Ruiz", "edad":25})
+
+	time.sleep(2)
+
+	respuesta=cliente.get("/clientes")
+
+	contenido=respuesta.json()
+
+	assert respuesta.status_code==200
+	assert len(contenido)==6
+
+	for cliente in contenido:
+
+		assert "usuario" in cliente

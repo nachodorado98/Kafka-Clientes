@@ -1,5 +1,6 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from typing import List, Dict, Optional
 
 from .confconexion import *
 
@@ -36,3 +37,13 @@ class Conexion:
 						(usuario, nombre, apellido1, apellido2, edad))
 
 		self.confirmar()
+
+	# Metodo para obtener los clientes
+	def obtenerClientes(self)->Optional[List[Dict]]:
+
+		self.c.execute("""SELECT usuario
+							FROM clientes""")
+
+		clientes=self.c.fetchall()
+
+		return None if clientes==[] else clientes
